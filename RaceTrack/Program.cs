@@ -1,25 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 
-namespace RaceTrack
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var host = new WebHostBuilder ()
-                .UseKestrel ()
-                .UseStartup<Startup> ()
-                .Build ();
+namespace RaceTrack {
 
-            host.Run ();
+
+    public class Program {
+        // State object for reading client data asynchronously  
+
+        // Thread signal.  
+       
+        public static int Main (String[] args) {
+            var player = new PlayerConnection();
+            return 0;
         }
     }
 }

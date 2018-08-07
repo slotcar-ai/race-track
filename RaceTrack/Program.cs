@@ -13,6 +13,7 @@ namespace RaceTrack {
         // Thread signal.  
        
         public static int Main (String[] args) {
+            var track = new TrackConnection();
             var player = new PlayerConnection();
             return 0;
         }

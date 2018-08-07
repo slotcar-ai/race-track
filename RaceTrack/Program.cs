@@ -15,6 +15,17 @@ namespace RaceTrack {
         public static int Main (String[] args) {
             var track = new TrackConnection();
             var player = new PlayerConnection();
+            
+            var speed = -1;
+            while (true)
+            {
+                if (speed != player.GetLatestSpeed())
+                {
+                    speed= player.GetLatestSpeed();
+                    track.SetSpeed(speed);
+                }
+                Thread.Sleep(1000);
+            }
             return 0;
         }
     }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 
 namespace RaceTrack {
-    internal class PlayerConnection {
+    internal class PlayerConnection : IDisposable {
         public class StateObject {
             // Client  socket.  
             public Socket workSocket = null;
@@ -17,12 +17,15 @@ namespace RaceTrack {
             public StringBuilder sb = new StringBuilder ();
         }
         private char unitSeperatorChar = (char) Convert.ToInt32 ("0x1f", 16);
-        private (Socket speed, Socket update) _playerA;
+        private (int speed, Socket update, Socket speedUpdate) _playerA;
         public PlayerConnection () {
             StartListening ();
         }
         public ManualResetEvent allDone = new ManualResetEvent (false);
 
+        public int GetLatestSpeed () {
+            return _playerA.speed;
+        }
         public void StartListening () {
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
@@ -41,35 +44,34 @@ namespace RaceTrack {
 
             // Bind the socket to the local endpoint and listen for incoming connections.  
             try {
-                listener2.Bind (localEndPoint2);
+
                 listener.Bind (localEndPoint);
-                listener2.Listen (2);
                 listener.Listen (2);
 
-                while (true) {
+                listener2.Bind (localEndPoint2);
+                listener2.Listen (2);
+
+                // while (true) {
                     // Set the event to nonsignaled state.  
                     allDone.Reset ();
 
-                    // Start an asynchronous socket to listen for connections.  
                     Console.WriteLine ("Waiting for a connection...");
-                    listener2.BeginAccept (
-                        new AsyncCallback (AcceptCallback),
-                        listener2);
                     listener.BeginAccept (
                         new AsyncCallback (AcceptCallback),
                         listener);
+                    // Start an asynchronous socket to listen for connections.  
+                    listener2.BeginAccept (
+                        new AsyncCallback (AcceptCallback),
+                        listener2);
 
                     // Wait until a connection is made before continuing.  
+                    // }
                     allDone.WaitOne ();
                     allDone.WaitOne ();
-                }
-
+                // }
             } catch (Exception e) {
                 Console.WriteLine (e.ToString ());
             }
-
-            Console.WriteLine ("\nPress ENTER to continue...");
-            Console.Read ();
         }
 
         public void AcceptCallback (IAsyncResult ar) {
@@ -109,13 +111,22 @@ namespace RaceTrack {
                 if (content.IndexOf (unitSeperatorChar) > -1) {
                     // All the data has been read from the   
                     // client. Display it on the console.  
+                    string data = content.Replace (unitSeperatorChar.ToString (), "");
                     Console.WriteLine ("Data : {1}",
-                        content.Length, content.Replace (unitSeperatorChar.ToString (), ""));
+                        content.Length, data);
                     state.sb.Clear ();
-                    if (content == "PlayerA:UpdateMe" + unitSeperatorChar) {
-                        _playerA = (speed: null, update: handler);
+                    if (data == "PlayerA:UpdateMe") {
+                        _playerA = (speed: 0, update: handler, speedUpdate: null);
                         SendTrackUpdates (handler);
                         return;
+                    } else if (data == "PlayerA:Speed") {
+                        _playerA = (speed: 0, update: handler, speedUpdate: handler);
+                        return;
+                    } else {
+                        int speed = 0;
+                        if (Int32.TryParse (data, out speed)) {
+                            _playerA.speed = speed;
+                        }
                     }
                 }
                 handler.BeginReceive (state.buffer, 0, StateObject.BufferSize, 0,
@@ -155,5 +166,14 @@ namespace RaceTrack {
             }
         }
 
+        public void Dispose () {
+            CloseHandle (_playerA.speedUpdate);
+            CloseHandle (_playerA.update);
+        }
+
+        private void CloseHandle (Socket handle) {
+            handle.Shutdown (SocketShutdown.Both);
+            handle.Close ();
+        }
     }
 }

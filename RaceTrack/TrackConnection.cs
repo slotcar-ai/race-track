@@ -3,6 +3,7 @@ using System.Threading;
 namespace RaceTrack {
     public class TrackConnection {
         private int _handle;
+        private TrackSerialPort _serialPort;
 
         public TrackConnection () {
             var ports = TrackSerialPort.GetPortNames ();
@@ -11,25 +12,23 @@ namespace RaceTrack {
                 Console.WriteLine ($"Serial port name: {port}");
             }
 
-            var serialPort = new TrackSerialPort () {
+            _serialPort = new TrackSerialPort () {
                 PortName = "/dev/ttyACM0",
                 BaudRate = 9600
             };
 
             // Subscribe to the DataReceived event.
-            serialPort.DataReceived += SerialPort_DataReceived;
+            _serialPort.DataReceived += SerialPort_DataReceived;
 
             // Now open the port.
-            _handle = serialPort.Open ();
-            var start = GetBytesWithLittleEndian (100);
-            var stop = GetBytesWithLittleEndian (0);
-            var started = false;
-            while (true) {
-                var send = started ? stop : start;
-                serialPort.Write (_handle, send);
-                started = !started;
-                Thread.Sleep (2000);
-            }
+            _handle = _serialPort.Open ();
+            SetSpeed (0);
+        }
+
+        public void SetSpeed (int speed) {
+            var data = GetBytesWithLittleEndian (speed);
+            _serialPort.Write (_handle, data);
+
         }
 
         private static byte[] GetBytesWithLittleEndian (int value) {

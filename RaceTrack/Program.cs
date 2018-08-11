@@ -9,7 +9,10 @@ namespace RaceTrack {
     public class Program {
         
         public static int Main (String[] args) {
-            //var track = new TrackConnection();
+           // var ;
+            //using (var track = new TrackConnection())
+            Console.WriteLine("RaceTrack started");
+            using (var eventHub = new SlotcarAiEventHub())
             using (var player = new PlayerConnection ()) {
                 var speed = -1;
                 while (true) {
@@ -17,7 +20,10 @@ namespace RaceTrack {
                         speed = player.GetLatestSpeed ();
                         //track.SetSpeed(speed);
                     }
-                    player.SendTrackUpdate ("En track update: " + DateTime.Now.Ticks);
+
+                    string trackUpdate = "En track update: " + DateTime.Now.Ticks;
+                    player.SendTrackUpdate (trackUpdate);
+                    eventHub.SendMessage(trackUpdate);
                     Thread.Sleep (1000);
                 }
             };

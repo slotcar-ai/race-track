@@ -25,10 +25,23 @@ namespace RaceTrack {
         }
         public void StartListening () {
             updateStreamerConected.Reset ();
-            // The DNS name of the computer  
-            IPHostEntry ipHostInfo = Dns.GetHostEntry (Dns.GetHostName ());
+
+            var hostname = Environment.GetEnvironmentVariable("PLAYER_HOSTNAME");
+            if (hostname == null)
+            {
+                hostname = "localhost";
+            }
+
+            var portString = Environment.GetEnvironmentVariable("PLAYER_PORT");
+            var port = 11000;
+            if (portString != null)
+            {
+                port = Int32.Parse(portString);
+            }
+
+            IPHostEntry ipHostInfo = Dns.GetHostEntry (hostname);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint (ipAddress, 11000);
+            IPEndPoint localEndPoint = new IPEndPoint (ipAddress, port);
             Socket listener = new Socket (ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             try {

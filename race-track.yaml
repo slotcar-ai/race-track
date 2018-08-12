@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: race-track
+  labels:
+    app: slotcarai
+    component: race-track
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: race-track
+  template:
+    metadata:
+      labels:
+        app: race-track
+    spec:
+      containers:
+      - name: race-track
+        image: slotcarai/race-track:25
+        env:
+        - name: RACE_TRACK_PORT
+          value: "11000"
+        ports:
+        - containerPort: 11000
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name:  race-track
+spec:
+  selector:
+    app: race-track
+  ports:
+  - name: slotcarai-race-track
+    port: 11000

@@ -32,24 +32,18 @@ namespace RaceTrack
         {
             updateStreamerConected.Reset();
 
-            var hostname = Environment.GetEnvironmentVariable("PLAYER_HOSTNAME");
-            if (hostname == null)
-            {
-                hostname = "localhost";
-            }
-
-            var portString = Environment.GetEnvironmentVariable("PLAYER_PORT");
+            var portString = Environment.GetEnvironmentVariable("RACE_TRACK_PORT");
             var port = 11000;
             if (portString != null)
             {
                 port = Int32.Parse(portString);
             }
 
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(hostname);
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
             Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
+            
             try
             {
                 listener.Bind(localEndPoint);

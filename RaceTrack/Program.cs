@@ -12,9 +12,8 @@ namespace RaceTrack
 
         public static int Main(String[] args)
         {
-            // var ;
-            //using (var track = new TrackConnection())
             Console.WriteLine("RaceTrack started");
+            //using (var track = new TrackConnection())
             using (var eventHub = new SlotcarAiEventHub())
             using (var player = new PlayerConnection())
             {

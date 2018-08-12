@@ -13,7 +13,7 @@ namespace RaceTrack
         public static int Main(String[] args)
         {
             Console.WriteLine("RaceTrack started");
-            //using (var track = new TrackConnection())
+            using (var track = new TrackConnection())
             using (var eventHub = new SlotcarAiEventHub())
             using (var player = new PlayerConnection())
             {
@@ -23,7 +23,7 @@ namespace RaceTrack
                     if (speed != player.GetLatestSpeed())
                     {
                         speed = player.GetLatestSpeed();
-                        //track.SetSpeed(speed);
+                        track.SetSpeed(speed);
                     }
 
                     string trackUpdate = "En track update: " + DateTime.Now.Ticks;

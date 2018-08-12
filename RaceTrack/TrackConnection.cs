@@ -12,8 +12,9 @@ namespace RaceTrack {
                 Console.WriteLine ($"Serial port name: {port}");
             }
 
+            var portName = ports.Length > 0 ? ports[0]:  "/dev/ttyACM0";
             _serialPort = new TrackSerialPort () {
-                PortName = "/dev/ttyACM0",
+                PortName = portName,
                 BaudRate = 9600
             };
 

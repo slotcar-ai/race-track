@@ -43,9 +43,16 @@ namespace RaceTrack {
         public event SerialDataReceivedEventHandler DataReceived;
 
         public int Open () {
-            int handle = Open (this.PortName, OPEN_READ_WRITE);
+            Console.WriteLine("Opening port: " + PortName);
+                int handle = Open (this.PortName, OPEN_READ_WRITE);
 
             if (handle == -1) {
+                Console.WriteLine("Opening port 1: " + PortName);
+                handle = Open (this.PortName, 1);
+            }
+            if (handle == -1) {
+                Console.WriteLine("Opening port 0: " + PortName);
+                handle = Open (this.PortName, 0);
                 throw new Exception ($"Could not open port ({this.PortName})");
             }
 
@@ -79,7 +86,9 @@ namespace RaceTrack {
             var ports = new List<string> ();
 
             string[] ttyPorts = Directory.GetFiles ("/dev/", "tty*");
+            Console.WriteLine("Listing all Dev: ");
             foreach (string port in ttyPorts) {
+                Console.WriteLine(port);
                 if (port.StartsWith ("/dev/ttyS") || port.StartsWith ("/dev/ttyUSB") || port.StartsWith ("/dev/ttyACM") || port.StartsWith ("/dev/ttyAMA")) {
                     ports.Add (port);
                 }

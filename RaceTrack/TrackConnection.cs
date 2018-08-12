@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 namespace RaceTrack {
-    public class TrackConnection {
+    public class TrackConnection : IDisposable {
         private int _handle;
         private TrackSerialPort _serialPort;
 
@@ -46,6 +46,11 @@ namespace RaceTrack {
             // Write to debug output.
             Console.WriteLine ("Vi fikk: " + serialdata);
 
+        }
+
+        public void Dispose()
+        {
+            _serialPort.Close();
         }
     }
 }

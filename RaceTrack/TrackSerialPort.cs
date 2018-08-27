@@ -51,7 +51,7 @@ namespace RaceTrack {
 
             SetBaudRate (handle);
 
-            Task.Delay (2000);
+            Task.Delay (1000);
 
             Task.Run (() => StartReading (handle));
             return handle;
@@ -65,14 +65,13 @@ namespace RaceTrack {
 
             IntPtr array = Marshal.AllocHGlobal (bytes.Length);
             Marshal.Copy (bytes, 0, array, bytes.Length);
-            // Call unmanaged code
             write (handle, array, bytes.Length);
             Marshal.FreeHGlobal (array);
-        }
 
-        public string ReadExisting () {
-            //Todo: vi må konvertere denne riktig
-            return BitConverter.ToInt64 (serialDataBuffer, 0).ToString ();
+            // GCHandle pinnedArray = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            // IntPtr pointer = pinnedArray.AddrOfPinnedObject();
+            // pinnedArray.Free();
+
         }
 
         public static string[] GetPortNames () {
@@ -127,8 +126,11 @@ namespace RaceTrack {
 
                 int lengthOfDataInBuffer = Read (handle, serialDataBuffer, SERIAL_BUFFER_SIZE);
 
-                if (lengthOfDataInBuffer != -1 && !(lengthOfDataInBuffer == 1 && serialDataBuffer[0] == 10)) {
-                    DataReceived.Invoke (this, new SerialDataReceivedEventArgs ());
+                // if (lengthOfDataInBuffer != -1 && !(lengthOfDataInBuffer == 1 && serialDataBuffer[0] == 0)) {
+                if (lengthOfDataInBuffer != -1) {
+                    byte[] dataRecieved = new byte[lengthOfDataInBuffer];
+                    Array.Copy(serialDataBuffer, dataRecieved, lengthOfDataInBuffer);
+                    DataReceived.Invoke (this, new SerialDataReceivedEventArgs {DataReceived  = dataRecieved});
                 }
 
                 Task.Delay (50);
@@ -137,15 +139,15 @@ namespace RaceTrack {
     }
 }
 public delegate void SerialDataReceivedEventHandler (object sender, SerialDataReceivedEventArgs e);
-public class SerialDataReceivedEventArgs : EventArgs { }
+public class SerialDataReceivedEventArgs : EventArgs { 
+    public byte[] DataReceived {get; set;}
+}
 public interface ISerialPort : IDisposable {
     int BaudRate { get; set; }
 
     string PortName { get; set; }
 
     bool IsOpen { get; set; }
-
-    string ReadExisting ();
 
     int Open ();
 

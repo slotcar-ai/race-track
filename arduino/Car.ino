@@ -1,4 +1,5 @@
 int inByte = 0; // incoming serial byte
+int outByte = 100; // incoming serial byte
 
 void setup()
 {
@@ -20,13 +21,13 @@ void setup()
 
 void loop()
 {
-
     // if we get a valid byte, read analog ins:
     if (Serial.available() > 0)
     {
         // get incoming byte:
         inByte = Serial.read();
         analogWrite(11, inByte);
+
         Serial.write(inByte);
-    }
+        }
 }

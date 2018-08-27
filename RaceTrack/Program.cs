@@ -13,25 +13,29 @@ namespace RaceTrack
         public static int Main(String[] args)
         {
             Console.WriteLine("RaceTrack started");
-            //using (var track = new TrackConnection())
-            using (var eventHub = new SlotcarAiEventHub())
-            using (var player = new PlayerConnection())
+            using (var track = new TrackConnection())
+            // using (var eventHub = new SlotcarAiEventHub())
+            // using (var player = new PlayerConnection())
             {
-                var speed = -1;
-                while (true)
+                var speed = 0;
+                while (speed <= 10000)
                 {
-                    if (speed != player.GetLatestSpeed())
-                    {
-                        speed = player.GetLatestSpeed();
-                        //track.SetSpeed(speed);
-                    }
+                    // if (speed != player.GetLatestSpeed())
+                    // {
 
-                    string trackUpdate = "En track update: " + DateTime.Now.Ticks;
-                    player.SendTrackUpdate(trackUpdate);
-                    eventHub.SendMessage(trackUpdate);
-                    Thread.Sleep(1000);
+                    // speed = player.GetLatestSpeed();
+                    track.SetSpeed(speed);
+                    // }
+                    speed += 1000;
+                    // string trackUpdate = "En track update: " + DateTime.Now.Ticks;
+                    // player.SendTrackUpdate(trackUpdate);
+                    // eventHub.SendMessage(trackUpdate);
+                    Thread.Sleep(2000);
                 }
+                    Thread.Sleep(2000);
+                    track.SetSpeed(0);
             };
+            
             return 0;
         }
     }

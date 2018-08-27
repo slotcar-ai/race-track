@@ -49,7 +49,7 @@ namespace RaceTrack
                 listener.Bind(localEndPoint);
                 listener.Listen(4);
                 listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
-                Console.WriteLine("Started listning for players");
+                Console.WriteLine("Started listning for players at " + listener.LocalEndPoint.ToString());
             }
             catch (Exception e)
             {

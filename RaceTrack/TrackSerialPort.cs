@@ -9,7 +9,7 @@ namespace RaceTrack {
     public class TrackSerialPort : ISerialPort {
         private static int OPEN_READ_WRITE = 2;
 
-        private static int SERIAL_BUFFER_SIZE = 64;
+        private static int SERIAL_BUFFER_SIZE = 8;
 
         private byte[] serialDataBuffer = new byte[SERIAL_BUFFER_SIZE];
         [DllImport ("libc", EntryPoint = "open")]
@@ -67,11 +67,6 @@ namespace RaceTrack {
             Marshal.Copy (bytes, 0, array, bytes.Length);
             write (handle, array, bytes.Length);
             Marshal.FreeHGlobal (array);
-
-            // GCHandle pinnedArray = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-            // IntPtr pointer = pinnedArray.AddrOfPinnedObject();
-            // pinnedArray.Free();
-
         }
 
         public static string[] GetPortNames () {
@@ -126,8 +121,7 @@ namespace RaceTrack {
 
                 int lengthOfDataInBuffer = Read (handle, serialDataBuffer, SERIAL_BUFFER_SIZE);
 
-                // if (lengthOfDataInBuffer != -1 && !(lengthOfDataInBuffer == 1 && serialDataBuffer[0] == 0)) {
-                if (lengthOfDataInBuffer != -1) {
+                if (lengthOfDataInBuffer != -1 && !(lengthOfDataInBuffer == 1 && serialDataBuffer[0] == 10)) {
                     byte[] dataRecieved = new byte[lengthOfDataInBuffer];
                     Array.Copy(serialDataBuffer, dataRecieved, lengthOfDataInBuffer);
                     DataReceived.Invoke (this, new SerialDataReceivedEventArgs {DataReceived  = dataRecieved});

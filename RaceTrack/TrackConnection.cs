@@ -1,11 +1,14 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Buffers.Binary;
+
 namespace RaceTrack
 {
     public class TrackConnection : IDisposable
     {
         private int _handle;
+        private int speed = 0;
         private TrackSerialPort _serialPort;
 
         public TrackConnection()
@@ -43,12 +46,12 @@ namespace RaceTrack
 
         private static byte[] GetBytesWithLittleEndian(int value)
         {
-            var valueInInt16 = (Int16) value;
-            byte[] bytes = BitConverter.GetBytes(valueInInt16);
+            if(value >255) throw new Exception("Vi only support one byte");
+            byte[] bytes = BitConverter.GetBytes((Int16)value);
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
-            // var bbb = new byte[1];
-            // Array.Copy(bytes, bbb, 1);
+           // var byte = new byte[1];
+            //Array.Copy(bytes, byte, 1);
             return bytes;
         }
 
@@ -59,13 +62,12 @@ namespace RaceTrack
             //Todo: vi må konvertere denne riktig
             //ar speed =  BitConverter.ToInt32 (serialDataBuffer, 0).ToString ();
             var bytes = e.DataReceived;
-            if (!BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(bytes);
-            }
-            var speed = BitConverter.ToInt16(bytes);
+            // if (!BitConverter.IsLittleEndian)
+            // {
+            //     Array.Reverse(bytes);
+            // }
+            var speed = BinaryPrimitives.ReadInt16LittleEndian(bytes);
             Console.WriteLine("Vi fikk fra arduino: " + speed +" --> "+string.Join(", ", e.DataReceived));
-            // Read the data that's in the serial buffer.
         }
 
         public void Dispose()

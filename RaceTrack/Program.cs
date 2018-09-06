@@ -17,25 +17,22 @@ namespace RaceTrack
             // using (var eventHub = new SlotcarAiEventHub())
             // using (var player = new PlayerConnection())
             {
-                var speed = 0;
-                while (speed <= 10000)
-                {
-                    // if (speed != player.GetLatestSpeed())
-                    // {
+//                var speed = 0;
+                // if (speed != player.GetLatestSpeed())
+                // {
 
-                    // speed = player.GetLatestSpeed();
-                    track.SetSpeed(speed);
-                    // }
-                    speed += 1000;
-                    // string trackUpdate = "En track update: " + DateTime.Now.Ticks;
-                    // player.SendTrackUpdate(trackUpdate);
-                    // eventHub.SendMessage(trackUpdate);
-                    Thread.Sleep(2000);
-                }
-                    Thread.Sleep(2000);
-                    track.SetSpeed(0);
+                // speed = player.GetLatestSpeed();
+                track.SetSpeed(0);
+                Thread.Sleep(2000);
+                // track.SetSpeed(0);
+                // }
+                // string trackUpdate = "En track update: " + DateTime.Now.Ticks;
+                // player.SendTrackUpdate(trackUpdate);
+                // eventHub.SendMessage(trackUpdate);
+                Thread.Sleep(2000);
+  //              track.SetSpeed(0);
             };
-            
+
             return 0;
         }
     }

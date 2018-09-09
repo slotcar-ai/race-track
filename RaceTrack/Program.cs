@@ -22,9 +22,9 @@ namespace RaceTrack
                 // {
 
                 // speed = player.GetLatestSpeed();
-                track.SetSpeed(0);
+                track.SetSpeed(200);
                 Thread.Sleep(2000);
-                // track.SetSpeed(0);
+                // track.SetSpeed(3);
                 // }
                 // string trackUpdate = "En track update: " + DateTime.Now.Ticks;
                 // player.SendTrackUpdate(trackUpdate);

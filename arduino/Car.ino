@@ -4,9 +4,11 @@ int breakByte = 0; // incoming serial byte
 
 void setup()
 {
+    pinMode(LED_BUILTIN, OUTPUT);
+
     //Setup Channel B
-    pinMode(13, OUTPUT); //Initiates Motor Channel A pin
-    pinMode(8, OUTPUT);  //Initiates Brake Channel A pin
+    pinMode(13, OUTPUT); //Initiates Motor Channel B pin
+    pinMode(8, OUTPUT);  //Initiates Brake Channel B pin
 
     //Motor B forward @ full speed
     digitalWrite(13, HIGH); //Establishes forward direction of Channel B
@@ -22,23 +24,26 @@ void setup()
 
 void loop()
 {
+    digitalWrite(LED_BUILTIN, HIGH); // turn the LED on (HIGH is the voltage level)
+    delay(1000);                     // wait for a second
+    digitalWrite(LED_BUILTIN, LOW);  // turn the LED off by making the voltage LOW
+    delay(1000);
     // if we get a valid byte, read analog ins:
-    if (Serial.available() > 0)
+    if (Serial.available() > 1)
     {
-        // get incoming byte:
+
         inByte = Serial.read();
 
         if (inByte == breakByte)
         {
             analogWrite(11, breakByte);
-            // digitalWrite(8, HIGH); //Engage the Brake for Channel B
+            digitalWrite(8, HIGH); //Engage the Brake for Channel B
         }
         else
         {
             digitalWrite(8, LOW); //Disengage the Brake for Channel B
-            analogWrite(11, 255);
+            analogWrite(11, inByte);
         }
-        Serial.write(outByte);
-        Serial.flush();
+        Serial.write(inByte);
     }
 }

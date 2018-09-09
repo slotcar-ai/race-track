@@ -120,7 +120,7 @@ namespace RaceTrack {
                 Array.Clear (serialDataBuffer, 0, serialDataBuffer.Length);
 
                 int lengthOfDataInBuffer = Read (handle, serialDataBuffer, SERIAL_BUFFER_SIZE);
-
+            
                 if (lengthOfDataInBuffer != -1 && !(lengthOfDataInBuffer == 1 && serialDataBuffer[0] == 10)) {
                     byte[] dataRecieved = new byte[lengthOfDataInBuffer];
                     Array.Copy(serialDataBuffer, dataRecieved, lengthOfDataInBuffer);

@@ -31,7 +31,6 @@ namespace RaceTrack
 
             // Now open the port.
             _handle = _serialPort.Open();
-            SetSpeed(0);
             Console.WriteLine("Connected to racetrack");
         }
 
@@ -46,13 +45,13 @@ namespace RaceTrack
 
         private static byte[] GetBytesWithLittleEndian(int value)
         {
-            if(value >255) throw new Exception("Vi only support one byte");
+            if (value > 255) throw new Exception("Vi only support one byte");
             byte[] bytes = BitConverter.GetBytes((Int16)value);
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
-           // var byte = new byte[1];
-            //Array.Copy(bytes, byte, 1);
-            return bytes;
+            var byten = new byte[1];
+            Array.Copy(bytes, byten, 1);
+            return byten;
         }
 
         private static void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -66,8 +65,10 @@ namespace RaceTrack
             // {
             //     Array.Reverse(bytes);
             // }
-            var speed = BinaryPrimitives.ReadInt16LittleEndian(bytes);
-            Console.WriteLine("Vi fikk fra arduino: " + speed +" --> "+string.Join(", ", e.DataReceived));
+
+
+            BinaryPrimitives.TryReadInt16LittleEndian(bytes, out Int16 speed);
+            Console.WriteLine("Vi fikk fra arduino: " + speed + " --> " + string.Join(", ", e.DataReceived));
         }
 
         public void Dispose()

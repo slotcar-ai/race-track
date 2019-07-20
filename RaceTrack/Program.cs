@@ -1,38 +1,39 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
+﻿using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Scai.RaceTrack.Arduino;
 
-namespace RaceTrack
+namespace Scai.RaceTrack
 {
-
     public class Program
     {
-
-        public static int Main(String[] args)
+        public static async Task Main(string[] args)
         {
-            Console.WriteLine("RaceTrack started");
-            //using (var track = new TrackConnection())
-            using (var eventHub = new SlotcarAiEventHub())
-            using (var player = new PlayerConnection())
-            {
-                var speed = -1;
-                while (true)
+            var hostBuilder = new HostBuilder();
+            var host = hostBuilder
+                .ConfigureAppConfiguration((context, config) =>
                 {
-                    if (speed != player.GetLatestSpeed())
-                    {
-                        speed = player.GetLatestSpeed();
-                        //track.SetSpeed(speed);
-                    }
+                    config
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.json", optional: true)
+                        .AddEnvironmentVariables()
+                        .AddCommandLine(args);
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<TrackService>();
+                })
+                .ConfigureLogging((hostContext, configLogging) =>
+                {
+                    configLogging
+                        .AddConsole()
+                        .AddDebug();
+                });
 
-                    string trackUpdate = "En track update: " + DateTime.Now.Ticks;
-                    player.SendTrackUpdate(trackUpdate);
-                    eventHub.SendMessage(trackUpdate);
-                    Thread.Sleep(1000);
-                }
-            };
-            return 0;
+            await host.RunConsoleAsync();
         }
     }
 }

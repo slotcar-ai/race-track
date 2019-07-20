@@ -1,4 +1,6 @@
+# VS Code user settings
 .vscode
 
-*/bin*
-*/obj*
+# .NET Core compiled code
+bin/
+obj/

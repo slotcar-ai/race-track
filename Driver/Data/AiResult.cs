@@ -1,3 +1,5 @@
+using System;
+
 namespace Scai.Driver.Data
 {
     public class AiResult
@@ -8,19 +10,23 @@ namespace Scai.Driver.Data
 
         public ResultVariable[] Variables { get; }
 
-        public RuntimeError Error { get; }
+        public TimeSpan ExecutionTime { get; }
 
-        public AiResult(int speed, ResultVariable[] variables)
+        public Exception RuntimeException { get; }
+
+        public AiResult(int speed, ResultVariable[] variables, TimeSpan executionTime)
         {
             IsOk = true;
             Speed = speed;
             Variables = variables;
+            ExecutionTime = executionTime;
         }
 
-        public AiResult(RuntimeError runtimeError)
+        public AiResult(Exception runtimeException, TimeSpan executionTime)
         {
             IsOk = false;
-            Error = runtimeError;
+            RuntimeException = runtimeException;
+            ExecutionTime = executionTime;
         }
     }
 }

@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using System;
 using Scai.Driver.Data;
 using Xunit;
 
@@ -41,11 +41,11 @@ int SetSpeed()
     return addTwo(7) + Car.Speed;
 }
         ", 13)]
-        public async Task ShouldCompileAndRun(string code, int speed)
+        public void ShouldCompileAndRun(string code, int speed)
         {
             var compiler = new AiCompiler();
             var compilationResult = compiler.Compile(code);
-            Assert.True(compilationResult.IsOk, "Compilation failed");
+            Assert.True(compilationResult.IsOk, $"Compilation failed");
 
             var ai = compilationResult.Ai;
             var state = new TrackState
@@ -57,8 +57,9 @@ int SetSpeed()
                 }
             };
 
-            var aiResult = await ai.RunAsync(state);
+            var aiResult = ai.Run(state);
             Assert.Equal(speed, aiResult.Speed);
+            Assert.InRange(aiResult.ExecutionTime, TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100));
         }
 
         [Theory]
@@ -80,18 +81,17 @@ var aVariable = 42;
         }
 
         [Theory]
-// TODO: Not working properly
-//         [InlineData(@"
-// int SetSpeed()
-// {
-//     var a = 1;
-//     while(a > 0)
-//     {
-//         a = 3;
-//     }
-//     return a;
-// }
-//         ", RuntimeError.Timeout)]
+        [InlineData(@"
+int SetSpeed()
+{
+    var a = 1;
+    while(a > 0)
+    {
+        a = 3;
+    }
+    return a;
+}
+        ", typeof(TimeoutException))]
 
         [InlineData(@"
 string AsString(object o)
@@ -104,8 +104,8 @@ int SetSpeed()
     Print(AsString(null));
     return 3;
 }
-        ", RuntimeError.Exception)]
-        public async Task ShouldNotRun(string code, RuntimeError runtimeError)
+        ", typeof(System.NullReferenceException))]
+        public void ShouldNotRun(string code, Type runtimeError)
         {
             var compiler = new AiCompiler();
             var compilationResult = compiler.Compile(code);
@@ -121,9 +121,9 @@ int SetSpeed()
                 }
             };
 
-            var aiResult = await ai.RunAsync(state);
+            var aiResult = ai.Run(state);
             Assert.False(aiResult.IsOk);
-            Assert.Equal(runtimeError, aiResult.Error);
+            Assert.Equal(runtimeError, aiResult.RuntimeException.GetType());
         }
     }
 }

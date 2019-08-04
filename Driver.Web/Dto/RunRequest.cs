@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Scai.Driver.Data;
 
 namespace Scai.Driver.Web.Dto
 {

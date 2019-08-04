@@ -43,11 +43,7 @@ namespace Scai.Driver.Test
             var ai = compilationResult.Ai;
             var state = new TrackState
             {
-                Car = new CarInfo
-                {
-                    Speed = 4,
-                    Position = 11
-                }
+                Car = new Car(4, 11),
             };
 
             var aiResult = ai.Run(state);
@@ -101,11 +97,7 @@ namespace Scai.Driver.Test
             var ai = compilationResult.Ai;
             var state = new TrackState
             {
-                Car = new CarInfo
-                {
-                    Speed = 4,
-                    Position = 11
-                }
+                Car = new Car(4, 11),
             };
 
             var aiResult = ai.Run(state);

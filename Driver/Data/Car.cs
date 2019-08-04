@@ -1,4 +1,4 @@
-namespace Scai.RaceTrack.Data
+namespace Scai.Driver.Data
 {
     public class Car
     {

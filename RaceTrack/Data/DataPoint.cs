@@ -1,3 +1,5 @@
+using Scai.Driver.Data;
+
 namespace Scai.RaceTrack.Data
 {
     public class DataPoint

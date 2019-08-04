@@ -1,0 +1,14 @@
+body {
+    font-family: monospace;
+    /* background: #2c2827; */
+    background: #34302f;
+    color: #8f938f;
+}
+
+input {
+    font-family: monospace;
+    background-color: #2c2827;
+    color: #8f938f;
+    border: 0px;
+    padding: 6px;
+}

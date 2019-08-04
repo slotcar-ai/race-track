@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AI Code</title>
+
+        <!-- En annen mulighet er mirrorsharp: https://github.com/ashmind/mirrorsharp -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.2/codemirror.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.2/theme/pastel-on-dark.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.2/addon/hint/show-hint.min.css">
+        <link rel="stylesheet" href="style.css">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.2/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.2/mode/clike/clike.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.2/addon/hint/show-hint.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.2/addon/hint/anyword-hint.min.js"></script>
+    </head>
+    <body>
+        <h1>Driver AI</h1>
+        <p>
+            <i>View the API-doc <a href="api/swagger/index.html" target="_blank">here</a>.</i>
+        </p>
+
+        <form id="aiForm">
+            <h2>Code</h2>
+            <textarea id="code" name="code" rows="30" cols="80">
+var hello = "Slotcar AI Consortium!";
+var doubleCarSpeed = 2 * Car.Speed;
+
+int SetSpeed()
+{
+    var ns = new int[] { 1, 2, 3, 4, 5 };
+    return ns.Aggregate(0, (acc, n) => acc + n);
+}</textarea>
+
+            <h2>State</h2>
+            <p>
+                <label for="speed">Speed: </label>
+                <input type="number" name="speed" id="speed" value="42" required>
+                <label for="position">Position: </label>
+                <input type="number" name="position" id="position" value="1337" required>
+                <input type="submit" value="    Run    ">
+            </p>
+        </form>
+
+        <h2>Result</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>SetSpeed</th>
+                    <th>ExecutionTime</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="setSpeed"></td>
+                    <td id="executionTime"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Variables</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Value</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody id="variables">
+            </tbody>
+        </table>
+
+        <h3>Errors</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Severity</th>
+                    <th>Message</th>
+                    <th>Line start</th>
+                    <th>Line end</th>
+                </tr>
+            </thead>
+            <tbody id="errors">
+            </tbody>
+        </table>
+
+        <script src="app.js"></script>
+    </body>
+</html>

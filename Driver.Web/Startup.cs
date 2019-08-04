@@ -55,7 +55,7 @@ namespace Scai.Driver.Web
                 .UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = fileProvider,
-                    RequestPath = new PathString(""),
+                    RequestPath = new PathString(string.Empty),
                 });
 
             application
